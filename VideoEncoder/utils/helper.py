@@ -78,14 +78,13 @@ async def handle_url(url, filepath, msg):
         await progress_for_url(downloader, msg)
 
 
-from ..db.users import users_db
-from .encoding import encode, extract_subs
-from .uploads import upload_worker
-
 async def handle_encode(filepath, message, msg, task_id=None, overrides=None):
+    from ..db.users import users_db          # ← add this
+    from .encoding import encode, extract_subs  # ← add this
+    from .uploads import upload_worker       # ← add this
+    
     user_id = message.from_user.id if message.from_user else message.chat.id
-    user_settings = await users_db.get_user(user_id)
-    user_settings = user_settings or {}
+    # ... rest of function unchanged
     
     if overrides:
         user_settings = {**user_settings, **overrides}
