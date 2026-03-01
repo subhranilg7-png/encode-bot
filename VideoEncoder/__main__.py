@@ -14,6 +14,7 @@
 #  © 2026 Kunal & Awakeners Bots. All Rights Reserved.
 # ===============================================================
 
+import os
 import dns.resolver
 from pyrogram import idle
 from . import app
@@ -22,6 +23,8 @@ from .core.log import log
 import time
 import http.client
 import email.utils
+import asyncio
+from aiohttp import web
 
 dns.resolver.default_resolver = dns.resolver.Resolver(configure=False)
 dns.resolver.default_resolver.nameservers = ['8.8.8.8']
@@ -42,7 +45,20 @@ def sync_bot_time():
         log.err("time_sync_failed", error=str(e))
     return 0
 
+async def start_web():
+    async def health(request):
+        return web.Response(text="OK")
+    app_web = web.Application()
+    app_web.router.add_get("/", health)
+    runner = web.AppRunner(app_web)
+    await runner.setup()
+    port = int(os.environ.get("PORT", 8080))
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+    log.inf("web_server", status="started", port=port)
+
 async def main():
+    await start_web()
     try:
         try:
             await app.start()
