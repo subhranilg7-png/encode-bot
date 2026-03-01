@@ -71,16 +71,15 @@ async def check_chat(message, chat):
     return False
 
 
-async def handle_url(url, filepath, msg):
-    downloader = SmartDL(url, filepath, progress_bar=False)
-    downloader.start(blocking=False)
-    while not downloader.isFinished():
-        await progress_for_url(downloader, msg)
+async def handle_encode(filepath, message, msg, task_id=None, overrides=None):
+    from ..db.users import users_db          # ← add this
+    from .encoding import encode, extract_subs  # ← add this
+    from .uploads import upload_worker       # ← add this
+    
+    user_id = message.from_user.id if message.from_user else message.chat.id
+    # ... rest of function unchanged
 
 
-from ..db.users import users_db
-from .encoding import encode, extract_subs
-from .uploads import upload_worker
 
 async def handle_encode(filepath, message, msg, task_id=None, overrides=None):
     user_id = message.from_user.id if message.from_user else message.chat.id
