@@ -1,4 +1,4 @@
-FROM python:3.9.2-slim-buster
+FROM python:3.9-slim-bullseye
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ="Asia/Kolkata"
 RUN apt -qq update && apt -qq install -y ffmpeg mediainfo build-essential
